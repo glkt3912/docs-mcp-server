@@ -1,0 +1,28 @@
+{
+  "name": "docs-mcp-server",
+  "version": "1.0.0",
+  "description": "GitHub/ローカル Markdown ドキュメントを Claude から参照するための MCP サーバー",
+  "type": "module",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node build/index.js",
+    "start:local": "LOCAL_MODE=true node build/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.0",
+    "@octokit/rest": "^21.0.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

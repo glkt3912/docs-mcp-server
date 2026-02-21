@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-22",
+  "documents": [
+    {
+      "id": "getting-started",
+      "path": "docs/getting-started.md",
+      "title": "はじめに",
+      "description": "プロジェクトの概要と基本的なセットアップ手順",
+      "tags": ["入門", "基礎", "セットアップ"],
+      "industry": ["IT", "製造業", "小売業"],
+      "topics": ["インストール", "初期設定", "環境構築"],
+      "updatedAt": "2026-02-22"
+    },
+    {
+      "id": "api-reference",
+      "path": "docs/api-reference.md",
+      "title": "API リファレンス",
+      "description": "REST API のエンドポイント仕様と使用方法",
+      "tags": ["API", "REST", "リファレンス"],
+      "industry": ["IT", "金融", "製造業"],
+      "topics": ["エンドポイント", "認証", "レスポンス形式"],
+      "updatedAt": "2026-02-22"
+    },
+    {
+      "id": "inventory-management",
+      "path": "docs/inventory-management.md",
+      "title": "在庫管理システム",
+      "description": "製造業向け在庫管理機能の設定と操作方法",
+      "tags": ["在庫", "製造業", "管理"],
+      "industry": ["製造業", "小売業"],
+      "topics": ["在庫管理", "入出庫", "棚卸し"],
+      "updatedAt": "2026-02-22"
+    }
+  ]
+}

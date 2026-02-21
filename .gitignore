@@ -1,0 +1,19 @@
+# ビルド成果物
+build/
+
+# 依存パッケージ
+node_modules/
+
+# 環境変数（トークン等の機密情報）
+.env
+.env.*
+!.env.example
+
+# エディタ・OS
+.DS_Store
+.vscode/
+*.swp
+*.swo
+
+# TypeScript
+*.tsbuildinfo

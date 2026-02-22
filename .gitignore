@@ -9,6 +9,10 @@ node_modules/
 .env.*
 !.env.example
 
+# MCP サーバー設定（マシン固有のパスを含むため）
+.mcp.json
+!.mcp.json.example
+
 # エディタ・OS
 .DS_Store
 .vscode/

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "docs": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/docs-mcp-server/build/index.js"],
+      "env": {
+        "LOCAL_MODE": "true",
+        "DOCS_BASE_PATH": "./docs"
+      }
+    }
+  }
+}

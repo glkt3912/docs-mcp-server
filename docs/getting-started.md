@@ -78,27 +78,30 @@ node build/index.js
 
 ## Claude Code への登録
 
-`~/.claude/settings.json` の `mcpServers` セクションに以下を追加します。
+プロジェクトルートの `.mcp.json` に設定することで、そのディレクトリで Claude Code を起動したときのみ自動接続されます。
+
+```bash
+cp .mcp.json.example .mcp.json
+# .mcp.json の args のパスを自分の環境に合わせて編集
+```
 
 ```json
 {
   "mcpServers": {
-    "docs-mcp": {
+    "docs": {
+      "type": "stdio",
       "command": "node",
-      "args": ["/path/to/docs-mcp-server/build/index.js"],
+      "args": ["/your/path/to/docs-mcp-server/build/index.js"],
       "env": {
-        "LOCAL_MODE": "false",
-        "GITHUB_TOKEN": "ghp_your_token_here",
-        "GITHUB_OWNER": "your-org",
-        "GITHUB_REPO": "your-repo",
-        "GITHUB_BRANCH": "main"
+        "LOCAL_MODE": "true",
+        "DOCS_BASE_PATH": "./docs"
       }
     }
   }
 }
 ```
 
-Claude Code を再起動すると、MCP ツールが利用可能になります。
+このディレクトリで Claude Code を起動すると自動で接続されます。起動後に `/mcp` で接続状態を確認できます。
 
 ## トラブルシューティング
 

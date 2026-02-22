@@ -53,28 +53,40 @@ npm start
 
 ## Claude Code への登録
 
-`~/.claude/settings.json` の `mcpServers` セクションに追加します。
-設定のサンプルは [`claude_code_config.json`](./claude_code_config.json) を参照してください。
+プロジェクトスコープで登録することで、このディレクトリで Claude Code を起動したときのみ自動接続されます。
+
+1. テンプレートをコピーしてパスを書き換える：
+
+```bash
+cp .mcp.json.example .mcp.json
+```
+
+2. `.mcp.json` の `args` を自分の環境の絶対パスに変更する：
 
 ```json
 {
   "mcpServers": {
-    "docs-mcp": {
+    "docs": {
+      "type": "stdio",
       "command": "node",
-      "args": ["/Volumes/Dev-SSD/dev/docs-mcp-server/build/index.js"],
+      "args": ["/your/path/to/docs-mcp-server/build/index.js"],
       "env": {
-        "LOCAL_MODE": "false",
-        "GITHUB_TOKEN": "ghp_...",
-        "GITHUB_OWNER": "your-org",
-        "GITHUB_REPO": "your-repo",
-        "GITHUB_BRANCH": "main"
+        "LOCAL_MODE": "true",
+        "DOCS_BASE_PATH": "./docs"
       }
     }
   }
 }
 ```
 
-Claude Code を再起動すると MCP ツールが利用可能になります。
+3. このディレクトリで Claude Code を起動すると自動で接続される：
+
+```bash
+claude
+# 起動後 /mcp で接続状態を確認
+```
+
+> `.mcp.json` はマシン固有の絶対パスを含むため `.gitignore` で管理対象外にしています。チームで共有する場合は各自が `.mcp.json.example` からコピーして作成してください。
 
 ## ドキュメントの追加方法
 

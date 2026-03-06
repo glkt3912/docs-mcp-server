@@ -36,10 +36,10 @@
       "id": "oss-tools",
       "path": "docs/oss-tools.md",
       "title": "OSS分析・学習ツール",
-      "description": "analyze_oss / get_oss_file / search_oss_code / generate_oss_doc の使い方。GitHub URL またはローカルパスを指定して任意のOSSリポジトリを分析・学習できる MCP ツール群。",
-      "tags": ["OSS", "コード分析", "学習", "GitHub", "コード検索"],
+      "description": "register_oss / list_oss_sources / analyze_oss / get_oss_file / search_oss_code / generate_oss_doc の使い方。エイリアス登録で繰り返し入力を省略可能。OSS_ALIASES 環境変数で再起動後も永続化できる。",
+      "tags": ["OSS", "コード分析", "学習", "GitHub", "コード検索", "エイリアス"],
       "industry": ["IT"],
-      "topics": ["analyze_oss", "get_oss_file", "search_oss_code", "generate_oss_doc", "GitHub API", "ローカルファイル", "キャッシュ"],
+      "topics": ["register_oss", "list_oss_sources", "analyze_oss", "get_oss_file", "search_oss_code", "generate_oss_doc", "OSS_ALIASES", "GitHub API", "ローカルファイル", "キャッシュ"],
       "updatedAt": "2026-03-06"
     }
   ]

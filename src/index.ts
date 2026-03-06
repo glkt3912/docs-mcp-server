@@ -26,6 +26,9 @@ const config = buildConfig();
 const octokit = new Octokit({ auth: config.githubToken });
 const service = new DocsService(config, octokit);
 const ossService = new OssService(octokit);
+if (process.env.OSS_ALIASES) {
+  ossService.loadAliasesFromEnv(process.env.OSS_ALIASES);
+}
 const server = createServer(service, ossService);
 
 async function main() {

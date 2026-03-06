@@ -75,6 +75,20 @@ export class OssService {
 
   constructor(private octokit?: GitHubTreeClient) {}
 
+  loadAliasesFromEnv(envValue: string): void {
+    // 形式: "alias1=source1,alias2=source2"
+    for (const entry of envValue.split(",")) {
+      const idx = entry.indexOf("=");
+      if (idx < 1) continue;
+      const alias = entry.slice(0, idx).trim();
+      const source = entry.slice(idx + 1).trim();
+      if (alias && source) {
+        this.aliasRegistry.set(alias, source);
+        console.error(`[oss-alias] 登録: "${alias}" -> "${source}"`);
+      }
+    }
+  }
+
   registerAlias(alias: string, source: string): void {
     this.aliasRegistry.set(alias, source);
   }

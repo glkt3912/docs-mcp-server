@@ -71,10 +71,27 @@ const LANGUAGE_EXT_MAP: Record<string, string> = {
 
 export class OssService {
   private treeCache = new Map<string, Promise<FileNode[]>>();
+  private aliasRegistry = new Map<string, string>(); // alias -> source
 
   constructor(private octokit?: GitHubTreeClient) {}
 
-  parseSource(source: string): OssSource {
+  registerAlias(alias: string, source: string): void {
+    this.aliasRegistry.set(alias, source);
+  }
+
+  resolveAlias(source: string): string {
+    return this.aliasRegistry.get(source) ?? source;
+  }
+
+  listAliases(): Array<{ alias: string; source: string }> {
+    return Array.from(this.aliasRegistry.entries()).map(([alias, source]) => ({
+      alias,
+      source,
+    }));
+  }
+
+  parseSource(rawSource: string): OssSource {
+    const source = this.resolveAlias(rawSource);
     // GitHub URL パターン
     const githubMatch = source.match(
       /^https?:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\/tree\/([^/]+))?(?:\/.*)?$/

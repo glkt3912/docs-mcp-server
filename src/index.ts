@@ -1,12 +1,13 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { Octokit } from "@octokit/rest";
-import { resolve, join, dirname } from "path";
+import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { DocsService, DocsConfig } from "./service.js";
+import { OssService } from "./oss-service.js";
 import { createServer } from "./server.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = resolve(__dirname, "..");
+const PROJECT_ROOT = process.env.PROJECT_ROOT ?? resolve(__dirname, "..");
 
 function buildConfig(): DocsConfig & { githubToken: string | undefined } {
   return {
@@ -24,7 +25,8 @@ function buildConfig(): DocsConfig & { githubToken: string | undefined } {
 const config = buildConfig();
 const octokit = new Octokit({ auth: config.githubToken });
 const service = new DocsService(config, octokit);
-const server = createServer(service);
+const ossService = new OssService(octokit);
+const server = createServer(service, ossService);
 
 async function main() {
   const mode = config.localMode ? "ローカル" : "GitHub";
@@ -46,8 +48,10 @@ async function main() {
       `[docs-mcp-server] GitHub: ${config.githubOwner}/${config.githubRepo}@${config.githubBranch}`
     );
   } else {
+    const resolvedDocsPath = resolve(PROJECT_ROOT, config.docsBasePath);
+    const rootSource = process.env.PROJECT_ROOT ? "env" : "default";
     console.error(
-      `[docs-mcp-server] ローカルパス: ${join(PROJECT_ROOT, config.docsBasePath)}`
+      `[docs-mcp-server] ローカルパス: ${resolvedDocsPath} (PROJECT_ROOT: ${rootSource})`
     );
   }
 

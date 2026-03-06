@@ -1,16 +1,16 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2026-02-22",
+  "version": "1.1.0",
+  "lastUpdated": "2026-03-06",
   "documents": [
     {
       "id": "getting-started",
       "path": "docs/getting-started.md",
       "title": "はじめに",
-      "description": "docs-mcp-server の概要・セットアップ手順・Claude Code への登録方法",
+      "description": "docs-mcp-server の概要・セットアップ手順・Claude Code への登録方法。ドキュメント管理ツールと OSS 分析ツールの両方を含む全ツール一覧。",
       "tags": ["入門", "セットアップ", "MCP", "Claude Code"],
       "industry": ["IT"],
-      "topics": ["インストール", "環境構築", "ローカルモード", "GitHub モード", "トラブルシューティング"],
-      "updatedAt": "2026-02-22"
+      "topics": ["インストール", "環境構築", "ローカルモード", "GitHub モード", "トラブルシューティング", "OSS分析"],
+      "updatedAt": "2026-03-06"
     },
     {
       "id": "dependencies",
@@ -31,6 +31,16 @@
       "industry": ["IT"],
       "topics": ["MCP SDK", "ツール登録", "stdio通信", "JSON-RPC", "アーキテクチャ"],
       "updatedAt": "2026-02-22"
+    },
+    {
+      "id": "oss-tools",
+      "path": "docs/oss-tools.md",
+      "title": "OSS分析・学習ツール",
+      "description": "analyze_oss / get_oss_file / search_oss_code / generate_oss_doc の使い方。GitHub URL またはローカルパスを指定して任意のOSSリポジトリを分析・学習できる MCP ツール群。",
+      "tags": ["OSS", "コード分析", "学習", "GitHub", "コード検索"],
+      "industry": ["IT"],
+      "topics": ["analyze_oss", "get_oss_file", "search_oss_code", "generate_oss_doc", "GitHub API", "ローカルファイル", "キャッシュ"],
+      "updatedAt": "2026-03-06"
     }
   ]
 }

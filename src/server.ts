@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { DocsService, scoreDocument } from "./service.js";
+import { OssService } from "./oss-service.js";
 import { ScoredDocument } from "./types.js";
 
-export function createServer(service: DocsService): McpServer {
+export function createServer(service: DocsService, ossService?: OssService): McpServer {
   const server = new McpServer({
     name: "docs-mcp-server",
     version: "1.0.0",
@@ -201,6 +202,151 @@ export function createServer(service: DocsService): McpServer {
       }
     }
   );
+
+  // OSS Analysis tools (available when ossService is provided)
+  if (ossService) {
+    /**
+     * ツール4: analyze_oss
+     */
+    server.registerTool(
+      "analyze_oss",
+      {
+        title: "OSSリポジトリ分析",
+        description:
+          "GitHub URL またはローカルパスを指定して、リポジトリ構造・主要ファイル・言語を分析します。",
+        inputSchema: {
+          source: z
+            .string()
+            .describe(
+              'GitHub URL（例: "https://github.com/nestjs/nest"）またはローカルパス（例: "/path/to/repo"）'
+            ),
+        },
+      },
+      async ({ source }) => {
+        try {
+          const parsed = ossService.parseSource(source);
+          const analysis = await ossService.analyze(parsed);
+          console.error(`[analyze_oss] 完了: ${analysis.name}`);
+          return {
+            content: [{ type: "text" as const, text: JSON.stringify(analysis, null, 2) }],
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error(`[analyze_oss] エラー: ${message}`);
+          return {
+            content: [{ type: "text" as const, text: `analyze_oss 失敗: ${message}` }],
+            isError: true,
+          };
+        }
+      }
+    );
+
+    /**
+     * ツール5: get_oss_file
+     */
+    server.registerTool(
+      "get_oss_file",
+      {
+        title: "OSSファイル取得",
+        description: "OSSリポジトリ内の指定ファイルの内容を取得します。",
+        inputSchema: {
+          source: z.string().describe("GitHub URL またはローカルパス"),
+          file_path: z
+            .string()
+            .describe('リポジトリルートからの相対パス（例: "src/index.ts"）'),
+        },
+      },
+      async ({ source, file_path }) => {
+        try {
+          const parsed = ossService.parseSource(source);
+          const content = await ossService.getFileContent(parsed, file_path);
+          const ext = file_path.split(".").pop() ?? "";
+          const text = `\`\`\`${ext}\n${content}\n\`\`\``;
+          console.error(`[get_oss_file] 取得完了: ${file_path}`);
+          return { content: [{ type: "text" as const, text }] };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error(`[get_oss_file] エラー (${file_path}): ${message}`);
+          return {
+            content: [{ type: "text" as const, text: `get_oss_file 失敗: ${message}` }],
+            isError: true,
+          };
+        }
+      }
+    );
+
+    /**
+     * ツール6: search_oss_code
+     */
+    server.registerTool(
+      "search_oss_code",
+      {
+        title: "OSSコード検索",
+        description: "OSSリポジトリ内のコードをキーワードで検索します（上位20件）。",
+        inputSchema: {
+          source: z.string().describe("GitHub URL またはローカルパス"),
+          query: z.string().describe("検索キーワード"),
+          file_pattern: z
+            .string()
+            .optional()
+            .describe('ファイルパターン（例: "**/*.ts"）。ローカルモードのみ有効。'),
+        },
+      },
+      async ({ source, query, file_pattern }) => {
+        try {
+          const parsed = ossService.parseSource(source);
+          const results = await ossService.searchCode(parsed, query, file_pattern);
+          console.error(`[search_oss_code] "${query}" → ${results.length} 件`);
+          return {
+            content: [
+              { type: "text" as const, text: JSON.stringify(results, null, 2) },
+            ],
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error(`[search_oss_code] エラー: ${message}`);
+          return {
+            content: [{ type: "text" as const, text: `search_oss_code 失敗: ${message}` }],
+            isError: true,
+          };
+        }
+      }
+    );
+
+    /**
+     * ツール7: generate_oss_doc
+     */
+    server.registerTool(
+      "generate_oss_doc",
+      {
+        title: "OSS学習ドキュメント生成",
+        description:
+          "OSSリポジトリを分析し、構造・モジュール・設計パターン・学習ポイントをまとめた Markdown ドキュメントを生成します。",
+        inputSchema: {
+          source: z.string().describe("GitHub URL またはローカルパス"),
+          focus: z
+            .enum(["architecture", "modules", "patterns", "all"])
+            .optional()
+            .describe('フォーカス領域。デフォルト: "all"'),
+        },
+      },
+      async ({ source, focus }) => {
+        try {
+          const parsed = ossService.parseSource(source);
+          const doc = await ossService.generateDoc(parsed, focus ?? "all");
+          console.error(`[generate_oss_doc] 生成完了: ${source}`);
+          return { content: [{ type: "text" as const, text: doc }] };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error(`[generate_oss_doc] エラー: ${message}`);
+          return {
+            content: [{ type: "text" as const, text: `generate_oss_doc 失敗: ${message}` }],
+            isError: true,
+          };
+        }
+      }
+    );
+  }
 
   return server;
 }

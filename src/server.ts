@@ -206,7 +206,70 @@ export function createServer(service: DocsService, ossService?: OssService): Mcp
   // OSS Analysis tools (available when ossService is provided)
   if (ossService) {
     /**
-     * ツール4: analyze_oss
+     * ツール4: register_oss
+     */
+    server.registerTool(
+      "register_oss",
+      {
+        title: "OSSソース登録",
+        description:
+          "GitHub URL またはローカルパスに短いエイリアスを登録します。登録後は他の OSS ツールの source にエイリアスを使用できます。",
+        inputSchema: {
+          source: z
+            .string()
+            .describe('登録する GitHub URL またはローカル絶対パス'),
+          alias: z
+            .string()
+            .describe('短い識別名（例: "nest", "mybff"）'),
+        },
+      },
+      async ({ source, alias }) => {
+        ossService.registerAlias(alias, source);
+        console.error(`[register_oss] "${alias}" -> "${source}"`);
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: `登録完了: "${alias}" -> "${source}"\n\n以降の OSS ツールで source="${alias}" と指定できます。`,
+            },
+          ],
+        };
+      }
+    );
+
+    /**
+     * ツール5: list_oss_sources
+     */
+    server.registerTool(
+      "list_oss_sources",
+      {
+        title: "登録済みOSSソース一覧",
+        description: "register_oss で登録したエイリアスと対応ソースの一覧を返します。",
+        inputSchema: {},
+      },
+      async () => {
+        const entries = ossService.listAliases();
+        if (entries.length === 0) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: "登録済みのエイリアスはありません。register_oss で登録してください。",
+              },
+            ],
+          };
+        }
+        const text = entries
+          .map((e) => `- "${e.alias}" -> ${e.source}`)
+          .join("\n");
+        return {
+          content: [{ type: "text" as const, text: `登録済みソース:\n${text}` }],
+        };
+      }
+    );
+
+    /**
+     * ツール6: analyze_oss
      */
     server.registerTool(
       "analyze_oss",
@@ -242,7 +305,7 @@ export function createServer(service: DocsService, ossService?: OssService): Mcp
     );
 
     /**
-     * ツール5: get_oss_file
+     * ツール7: get_oss_file
      */
     server.registerTool(
       "get_oss_file",
@@ -276,7 +339,7 @@ export function createServer(service: DocsService, ossService?: OssService): Mcp
     );
 
     /**
-     * ツール6: search_oss_code
+     * ツール8: search_oss_code
      */
     server.registerTool(
       "search_oss_code",
@@ -314,7 +377,7 @@ export function createServer(service: DocsService, ossService?: OssService): Mcp
     );
 
     /**
-     * ツール7: generate_oss_doc
+     * ツール9: generate_oss_doc
      */
     server.registerTool(
       "generate_oss_doc",

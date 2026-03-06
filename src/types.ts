@@ -23,3 +23,39 @@ export type MetadataFile = z.infer<typeof MetadataFileSchema>;
 export interface ScoredDocument extends DocumentMetadata {
   score: number;
 }
+
+// OSS Analysis types
+
+export type OssSource =
+  | {
+      type: "github";
+      owner: string;
+      repo: string;
+      branch: string;
+    }
+  | {
+      type: "local";
+      rootPath: string;
+    };
+
+export interface FileNode {
+  path: string;
+  type: "file" | "dir";
+}
+
+export interface SearchResult {
+  file: string;
+  line: number;
+  content: string;
+  context: string[];
+}
+
+export interface OssAnalysis {
+  name: string;
+  type: "github" | "local";
+  primaryLanguage: string;
+  fileCount: number;
+  tree: FileNode[];
+  keyFiles: string[];
+  summary: string;
+}
